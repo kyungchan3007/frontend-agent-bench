@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { BOOKS } from "@repo/api/mocks";
-import type { MonthlyLoan, PopularBook } from "../generated/types.gen";
+import type { MonthlyLoan, PopularBook } from "@/generated/api/types.gen";
 
 // 통계 앱 가짜 응답
 const POPULAR: PopularBook[] = [
