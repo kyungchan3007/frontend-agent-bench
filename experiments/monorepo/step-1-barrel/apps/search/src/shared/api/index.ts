@@ -1,4 +1,3 @@
-// 검색 앱 공통 API를 모아 내보내는 barrel
+// 앱 공통 API barrel
 export { setupAppApi } from "./setup";
-export { searchBooks } from "./search";
-export type { SearchResult } from "./generated/types.gen";
+export { enableMocking } from "./mocks";

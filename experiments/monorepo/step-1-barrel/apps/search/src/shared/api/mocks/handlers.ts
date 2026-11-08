@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { BOOKS } from "@repo/api/mocks";
-import type { SearchResult } from "../generated/types.gen";
+import type { SearchResult } from "@/generated/api/types.gen";
 
 // 검색 앱 가짜 응답
 export const appHandlers = [
