@@ -1,0 +1,40 @@
+# 검색 앱 전용 명세: 도서(Book)는 범용 명세를 가져다 사용한다
+openapi: 3.1.0
+info:
+  title: 도서 검색 API
+  version: 1.0.0
+paths:
+  /search:
+    get:
+      operationId: searchBooks
+      summary: 도서 검색
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 검색 결과
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResult"
+components:
+  schemas:
+    SearchResult:
+      type: object
+      required: [total, items]
+      properties:
+        total:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "../../../packages/api/openapi/common.yaml#/components/schemas/Book"

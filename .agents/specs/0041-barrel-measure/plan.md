@@ -24,4 +24,5 @@
 - [ ] 측정 ① 결과
 
 ## 허점
--
+- barrel을 자동으로 걷어낼 때 index가 다른 index를 다시 내보내는 경우(shared/api → mocks)를 따라가지 못해 import가 사라진 폴더를 가리켰다 → 빌드 전에 직접 수정
+- step-1-current api 패키지는 타입 묶음 진입점이 없어 `@repo/api/types`(생성 타입 파일 직접 연결)를 추가했다
