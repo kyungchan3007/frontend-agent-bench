@@ -1,0 +1,75 @@
+# 공통 명세: 세 앱이 함께 사용하는 도서 · 사용자 API
+openapi: 3.1.0
+info:
+  title: 도서관 공통 API
+  version: 1.0.0
+paths:
+  /books:
+    get:
+      operationId: getBooks
+      summary: 도서 목록
+      responses:
+        "200":
+          description: 도서 목록
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+  /books/{bookId}:
+    get:
+      operationId: getBook
+      summary: 도서 한 권
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 도서
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+  /users/{userId}:
+    get:
+      operationId: getUser
+      summary: 사용자 한 명
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 사용자
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+components:
+  schemas:
+    Book:
+      type: object
+      required: [id, title, author, category]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        category:
+          type: string
+    User:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
