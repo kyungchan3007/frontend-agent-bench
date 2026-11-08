@@ -9,6 +9,8 @@
 - 생성 코드는 커밋한다 (확인됨: 현업 A 방식)
 - 가짜 API는 MSW (확인됨)
 - 생성기가 TypeScript 7을 지원하지 않아 api 패키지만 TypeScript 6.0.3 사용 (확인됨)
+- 앱의 코드 생성기도 TypeScript 6이 필요 → 공식 안내대로 typescript를 @typescript/typescript6 별칭으로, tsc 7은 @typescript/native 별칭으로 함께 설치 (확인됨: 방법 A)
+- API 배치: 범용은 packages/api, 앱 공통은 앱 shared/api, 메뉴 전용은 메뉴 묶음(E에서) (확인됨)
 - 커밋 5개: 공통 명세 · 생성 → 감싸는 층 · barrel → 앱 전용 명세 · 생성 → MSW → 앱 표시 (확인됨)
 
 ## 파일 계획
