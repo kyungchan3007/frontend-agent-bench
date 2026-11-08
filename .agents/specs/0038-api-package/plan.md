@@ -26,4 +26,6 @@
 - [ ] 응답 표시
 
 ## 허점
+- api는 typescript 6.0.3, 앱은 @typescript/typescript6 6.0.2 별칭이라 msw(typescript를 peer로 가짐)가 두 벌 설치되어 HttpHandler 타입이 서로 맞지 않았다 → api도 같은 별칭으로 맞춰 한 벌로 정리
+- MSW 3에서 시작 옵션 이름이 onUnhandledRequest → onUnhandledFrame으로 바뀌었다
 - @hey-api/openapi-ts 0.99.0은 TypeScript 컴파일러 API를 쓰는데 TypeScript 7(Go 구현)에는 없어서 생성이 실패했다 → api 패키지만 6.0.3으로 고정
