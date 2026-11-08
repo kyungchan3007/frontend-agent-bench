@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { BOOKS, USERS } from "@repo/api/mocks";
-import type { Loan } from "../generated/types.gen";
+import type { Loan } from "@/generated/api/types.gen";
 
 // 대출 앱 가짜 응답
 const LOANS: Loan[] = [
