@@ -1,0 +1,50 @@
+# 통계 앱 전용 명세: 도서(Book)는 범용 명세를 가져다 사용한다
+openapi: 3.1.0
+info:
+  title: 통계 API
+  version: 1.0.0
+paths:
+  /stats/popular-books:
+    get:
+      operationId: getPopularBooks
+      summary: 인기 도서
+      responses:
+        "200":
+          description: 인기 도서 목록
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PopularBook"
+  /stats/monthly-loans:
+    get:
+      operationId: getMonthlyLoans
+      summary: 월별 대출 수
+      responses:
+        "200":
+          description: 월별 대출 수
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlyLoan"
+components:
+  schemas:
+    PopularBook:
+      type: object
+      required: [book, loanCount]
+      properties:
+        book:
+          $ref: "../../../packages/api/openapi/common.yaml#/components/schemas/Book"
+        loanCount:
+          type: integer
+    MonthlyLoan:
+      type: object
+      required: [month, count]
+      properties:
+        month:
+          type: string
+        count:
+          type: integer
