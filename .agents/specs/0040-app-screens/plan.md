@@ -24,4 +24,4 @@
 - [ ] 응답 표시
 
 ## 허점
--
+- loans의 공통 카드(shared)가 처음에 entities의 Loan 타입을 가져와서 아래 층(shared)이 위 층(entities)을 보는 방향이 됐다 → 카드는 화면 값만 받고, 대출 → 카드 값 변환(toCardProps)은 두 메뉴가 함께 쓰므로 entities/loans에 두었다
