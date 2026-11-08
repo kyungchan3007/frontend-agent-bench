@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    "./button": "./src/button.tsx",
-    "./card": "./src/card.tsx",
-    "./status-badge": "./src/status-badge.tsx"
+    "./button": "./src/common/button/index.ts",
+    "./card": "./src/common/card/index.ts",
+    "./status-badge": "./src/common/badge/index.ts"
   },
   "peerDependencies": {
     "react": "^19.3.1"
