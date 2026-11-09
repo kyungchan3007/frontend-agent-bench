@@ -1,4 +1,4 @@
-import type { Room } from "../data/rooms";
+import type { Choice, Page, Room } from "../data/rooms";
 
 // 대화창은 canvas 위에 HTML로 올린다. 글꼴과 줄바꿈, 근거 링크를 브라우저에 맡기기 위해서다
 export class Dialog {
@@ -6,6 +6,9 @@ export class Dialog {
   private readonly hint: HTMLDivElement;
   private room: Room | null = null;
   private page = 0;
+  private selected = 0;
+  private result: Page | null = null; // 고른 뒤 보여 주는 결과
+  onChoose: (roomId: string, choice: Choice) => void = () => {};
 
   constructor(parent: HTMLElement) {
     this.hint = document.createElement("div");
@@ -32,13 +35,28 @@ export class Dialog {
   open(room: Room) {
     this.room = room;
     this.page = 0;
+    this.selected = 0;
+    this.result = null;
     this.hint.classList.remove("visible");
     this.render();
   }
 
-  // 다음 쪽으로 넘긴다. 마지막 쪽이면 닫는다
+  // 선택지를 옮긴다. 고르는 쪽이 아니면 아무 일도 하지 않는다
+  move(step: number) {
+    const choices = this.choosing;
+    if (!choices) return;
+    this.selected = (this.selected + step + choices.length) % choices.length;
+    this.render();
+  }
+
+  // 고르는 쪽이면 결정하고, 아니면 다음 쪽으로 넘긴다. 마지막 쪽이면 닫는다
   next() {
     if (!this.room) return;
+    if (this.choosing) {
+      this.pick(this.selected);
+      return;
+    }
+    this.result = null;
     if (this.page + 1 < this.room.pages.length) {
       this.page += 1;
       this.render();
@@ -49,12 +67,40 @@ export class Dialog {
 
   close() {
     this.room = null;
+    this.result = null;
     this.box.classList.remove("visible");
+  }
+
+  private get choosing() {
+    return this.room && !this.result ? this.room.pages[this.page].choices : undefined;
+  }
+
+  private pick(index: number) {
+    const choice = this.choosing![index];
+    this.result = choice.result;
+    this.onChoose(this.room!.id, choice);
+    this.render();
+  }
+
+  private renderChoices(choices: Choice[]) {
+    const row = document.createElement("div");
+    row.className = "choices";
+    choices.forEach((choice, index) => {
+      const item = document.createElement("div");
+      item.className = index === this.selected ? "choice selected" : "choice";
+      const swatch = document.createElement("span");
+      swatch.className = "swatch";
+      swatch.style.background = choice.swatch;
+      item.append(swatch, choice.label);
+      item.addEventListener("click", () => this.pick(index));
+      row.append(item);
+    });
+    return row;
   }
 
   private render() {
     const room = this.room!;
-    const page = room.pages[this.page];
+    const page = this.result ?? room.pages[this.page];
     const title = document.createElement("div");
     title.className = "title";
     title.textContent = room.title;
@@ -64,6 +110,15 @@ export class Dialog {
     const term = document.createElement("div");
     term.className = "term";
     term.textContent = page.term;
+    const parts: HTMLElement[] = [title, text];
+    if (page.why) {
+      const why = document.createElement("div");
+      why.className = "why";
+      why.textContent = `왜 그럴까요? ${page.why}`;
+      parts.push(why);
+    }
+    if (page.choices) parts.push(this.renderChoices(page.choices));
+    parts.push(term);
     const foot = document.createElement("div");
     foot.className = "foot";
     const link = document.createElement("a");
@@ -73,9 +128,10 @@ export class Dialog {
     link.textContent = `근거 보기 ${room.evidence.label}`;
     const more = document.createElement("span");
     const last = this.page + 1 === room.pages.length;
-    more.textContent = `${this.page + 1} / ${room.pages.length} · [Space] ${last ? "닫기" : "다음"}`;
+    const action = page.choices ? "[←→] 고르기 · [Space] 결정" : `[Space] ${last ? "닫기" : "다음"}`;
+    more.textContent = `${this.page + 1} / ${room.pages.length} · ${action}`;
     foot.append(link, more);
-    this.box.replaceChildren(title, text, term, foot);
+    this.box.replaceChildren(...parts, foot);
     this.box.classList.add("visible");
   }
 }

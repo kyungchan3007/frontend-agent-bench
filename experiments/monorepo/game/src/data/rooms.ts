@@ -5,6 +5,15 @@ const ISSUE = "https://github.com/kyungchan3007/frontend-architecture/issues";
 export type Page = {
   text: string; // 쉬운 설명
   term: string; // 실제 용어와 수치
+  why?: string; // 결과가 그렇게 나온 이유
+  choices?: Choice[]; // 있으면 이 쪽에서 직접 고른다
+};
+
+export type Choice = {
+  id: string;
+  label: string;
+  swatch: string; // 선택지에 보여 줄 색
+  result: Page; // 고른 뒤 보여 줄 내용
 };
 
 export type Room = {
@@ -15,6 +24,18 @@ export type Room = {
   pages: Page[];
   evidence: { label: string; url: string };
 };
+
+// 1단계 packages/design-tokens의 실제 색 값
+const primaryColor = (id: string, label: string, swatch: string): Choice => ({
+  id,
+  label,
+  swatch,
+  result: {
+    text: `대표 색을 ${label}으로 바꾸었더니 세 팀의 화면이 함께 바뀌었습니다.`,
+    why: "세 팀 모두 색 값을 직접 적지 않고, 디자인실에 있는 같은 이름(primary)을 가져다 쓰기 때문입니다.",
+    term: `--primary: var(--palette-${id})`,
+  },
+});
 
 export const ROOMS: Room[] = [
   {
@@ -50,7 +71,16 @@ export const ROOMS: Room[] = [
     title: "디자인실",
     zone: [4, 288, 206, 122],
     pages: [
-      { text: "색을 한 곳에서 관리합니다. 여기서 색 하나를 바꾸면 세 팀의 화면이 함께 바뀝니다.", term: "packages/design-tokens · 색 토큰 20개 (Palette 10 + Semantic 10)" },
+      {
+        text: "색을 한 곳에서 관리합니다. 대표 색을 골라 보세요.",
+        term: "packages/design-tokens · 색 토큰 20개 (Palette 10 + Semantic 10)",
+        choices: [
+          primaryColor("blue-600", "파랑", "#2563eb"),
+          primaryColor("green-600", "초록", "#16a34a"),
+          primaryColor("amber-600", "주황", "#d97706"),
+          primaryColor("red-600", "빨강", "#dc2626"),
+        ],
+      },
     ],
     evidence: { label: "#47", url: `${ISSUE}/47` },
   },

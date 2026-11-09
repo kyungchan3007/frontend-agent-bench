@@ -1,16 +1,17 @@
 import Phaser from "phaser";
 import { drawBadge, drawCart, drawConstructionSign, drawPart, drawScaffold } from "../art/effect-art";
 import { WORLD } from "../art/floor-art";
+import type { Choice } from "../data/rooms";
 
 const TEAMS = [106, 320, 534];
 const MONITORS = [56, 146, 262, 466, 556];
-const SCREEN_COLORS = [0xdc6660, 0xf4c653, 0x79c47a, 0x8a6bc0];
 
 // 대화창 내용에 맞춰 층 위에 보여 주는 연출. 실제 측정 결과를 그림으로 표현한다
 export class RoomEffects {
   private items: Phaser.GameObjects.GameObject[] = [];
   private timers: Phaser.Time.TimerEvent[] = [];
   private zoomed = false;
+  private readonly screens: Phaser.GameObjects.Rectangle[];
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -28,15 +29,24 @@ export class RoomEffects {
     add("fx-part-b", drawPart("b1", "b2"));
     add("fx-part-g", drawPart("g1", "g2"));
     add("fx-part-r", drawPart("r1", "r2"));
+    // 고른 색은 대화창을 닫아도 남도록 모니터 위에 따로 둔다
+    this.screens = MONITORS.map((x) => scene.add.rectangle(x + 13, 84.5, 22, 13).setAlpha(0.75).setVisible(false));
   }
 
   play(id: string, page: number) {
     this.clear();
-    if (id === "design") this.screenColors();
+    if (id === "design") this.zoomOut();
     else if (id === "parts" && page === 1) this.rebuildAll();
     else if (id === "cache") this.bounce("fx-hit", 500, 322);
     else if (id === "stats" && page === 0) this.bounce("fx-unused", 533, 64);
     else if (id === "crate") this.crate(page);
+  }
+
+  // 대화창에서 고른 결과를 층에 반영한다
+  choose(roomId: string, choice: Choice) {
+    if (roomId !== "design") return;
+    const color = Number.parseInt(choice.swatch.slice(1), 16);
+    this.screens.forEach((screen) => screen.setFillStyle(color).setVisible(true));
   }
 
   stop() {
@@ -67,27 +77,6 @@ export class RoomEffects {
     const cam = this.scene.cameras.main;
     cam.zoomTo(1, 250, "Sine.easeInOut");
     cam.startFollow(this.player, true);
-  }
-
-  // 세 팀의 모니터 화면이 함께 바뀐다
-  private screenColors() {
-    this.zoomOut();
-    const screens = MONITORS.map((x) => {
-      const r = this.scene.add.rectangle(x + 13, 84.5, 22, 13, SCREEN_COLORS[0]);
-      this.items.push(r);
-      return r;
-    });
-    let i = 0;
-    this.timers.push(
-      this.scene.time.addEvent({
-        delay: 650,
-        loop: true,
-        callback: () => {
-          i = (i + 1) % SCREEN_COLORS.length;
-          screens.forEach((b) => b.setFillStyle(SCREEN_COLORS[i]));
-        },
-      }),
-    );
   }
 
   private rebuildAll() {
