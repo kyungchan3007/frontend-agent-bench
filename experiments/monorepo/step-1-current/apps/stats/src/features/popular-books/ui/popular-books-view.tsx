@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { RankingChart } from "@/shared/ui/chart/ranking-chart/ranking-chart";
 import { StatusBadge } from "@repo/ui/status-badge";
 import { fetchPopularBooks } from "@/entities/stats/api/stats";
 import type { PopularBook } from "@/entities/stats/model/types";
@@ -14,6 +15,7 @@ export function PopularBooksView() {
   return (
     <>
       <StatCard title="인기 도서" rows={items.map((p) => ({ key: p.book.id, label: p.book.title, value: `${p.loanCount}회` }))} />
+      <RankingChart labels={items.map((p) => p.book.title)} values={items.map((p) => p.loanCount)} />
       <StatusBadge status="available" />
     </>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BarChart } from "@repo/ui/chart";
 import { fetchMonthlyLoans, type MonthlyLoan } from "@/entities/stats";
 import { StatCard } from "@/shared/ui/card";
 
@@ -9,5 +10,10 @@ export function MonthlyLoansView() {
     fetchMonthlyLoans().then(setItems);
   }, []);
 
-  return <StatCard title="월별 대출 수" rows={items.map((m) => ({ key: m.month, label: m.month, value: `${m.count}건` }))} />;
+  return (
+    <>
+      <BarChart labels={items.map((m) => m.month)} values={items.map((m) => m.count)} />
+      <StatCard title="월별 대출 수" rows={items.map((m) => ({ key: m.month, label: m.month, value: `${m.count}건` }))} />
+    </>
+  );
 }
