@@ -19,6 +19,11 @@ export class Dialog {
     return this.room !== null;
   }
 
+  // 지금 보여 주는 방과 쪽 번호. 연출을 맞추는 데 쓴다
+  get current() {
+    return this.room ? { id: this.room.id, page: this.page } : null;
+  }
+
   showHint(title: string | null) {
     this.hint.textContent = title ? `${title} · [Space] 살펴보기` : "";
     this.hint.classList.toggle("visible", title !== null && !this.isOpen);

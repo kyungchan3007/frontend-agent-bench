@@ -14,12 +14,12 @@ export function window(p: Painter, x: number, y: number) {
 
 export function sign(p: Painter, cx: number, y: number, label: string) {
   const probe = document.createElement("canvas").getContext("2d")!;
-  probe.font = "9px Galmuri9";
+  probe.font = "10px Galmuri9";
   const w = Math.ceil(probe.measureText(label).width) + 14;
   const x = Math.round(cx - w / 2);
   p.box(x, y, w, 16, "tr", "tb2", "o");
   p.rect(x + 2, y + 2, w - 4, 12, "#3a2c2a");
-  p.text(label, x + 7, y + 3, "y1");
+  p.text(label, x + 7, y + 3, "y1", 10);
 }
 
 export function shelf(p: Painter, x: number, y: number, bins: Bin[]) {

@@ -4,10 +4,12 @@ import { drawFloor, WORLD } from "../art/floor-art";
 import { roomAt } from "../data/rooms";
 import { hitsCollider } from "../map/colliders";
 import { Dialog } from "../ui/dialog";
+import { RoomEffects } from "./effects";
 
 const SPEED = 90;
 const FEET = { w: 10, h: 6 };
 const START = { x: 320, y: 214 };
+const DIALOG_ROOM = 52;
 
 type Keys = Record<"up" | "down" | "left" | "right", Phaser.Input.Keyboard.Key>;
 
@@ -18,6 +20,7 @@ export class FloorScene extends Phaser.Scene {
   private facing: Dir = "down";
   private actionPressed = false;
   private dialog!: Dialog;
+  private effects!: RoomEffects;
 
   constructor() {
     super("floor");
@@ -42,7 +45,8 @@ export class FloorScene extends Phaser.Scene {
     this.add.image(0, 0, "floor").setOrigin(0);
     // 기준점을 발밑으로 두어 충돌 계산과 맞춘다
     this.player = this.add.sprite(START.x, START.y, "player", 0).setOrigin(0.5, 1);
-    this.cameras.main.setBounds(0, 0, WORLD.w, WORLD.h);
+    // 맵 아래쪽에 여백을 두어, 대화창이 캐릭터를 가리지 않게 한다
+    this.cameras.main.setBounds(0, 0, WORLD.w, WORLD.h + DIALOG_ROOM);
     this.cameras.main.startFollow(this.player, true);
 
     const kb = this.input.keyboard!;
@@ -53,6 +57,7 @@ export class FloorScene extends Phaser.Scene {
       this.actionPressed = true;
     });
     this.dialog = new Dialog(document.getElementById("game")!);
+    this.effects = new RoomEffects(this, this.player);
   }
 
   update(_time: number, delta: number) {
@@ -60,7 +65,10 @@ export class FloorScene extends Phaser.Scene {
     this.actionPressed = false;
     if (this.dialog.isOpen) {
       this.standStill();
-      if (pressed) this.dialog.next();
+      if (pressed) {
+        this.dialog.next();
+        this.syncEffects();
+      }
       return;
     }
 
@@ -68,6 +76,7 @@ export class FloorScene extends Phaser.Scene {
     this.dialog.showHint(room?.title ?? null);
     if (pressed && room) {
       this.dialog.open(room);
+      this.syncEffects();
       return;
     }
 
@@ -86,6 +95,12 @@ export class FloorScene extends Phaser.Scene {
 
     this.facing = dy > 0 ? "down" : dy < 0 ? "up" : dx < 0 ? "left" : "right";
     this.player.anims.play(`walk-${this.facing}`, true);
+  }
+
+  private syncEffects() {
+    const now = this.dialog.current;
+    if (now) this.effects.play(now.id, now.page);
+    else this.effects.stop();
   }
 
   private standStill() {
