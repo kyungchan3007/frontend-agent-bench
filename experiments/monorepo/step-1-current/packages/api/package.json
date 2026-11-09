@@ -1,5 +1,24 @@
 {
   "name": "@repo/api",
   "private": true,
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./setup": "./src/setup/setup.ts",
+    "./books": "./src/books/books.ts",
+    "./users": "./src/users/users.ts",
+    "./mocks": "./src/mocks/handlers.ts",
+    "./types": "./src/generated/types.gen.ts"
+  },
+  "scripts": {
+    "generate": "openapi-ts"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.99.0",
+    "msw": "3.0.4",
+    "typescript": "npm:@typescript/typescript6@6.0.2"
+  }
 }

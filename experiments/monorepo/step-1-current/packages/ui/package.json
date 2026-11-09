@@ -6,7 +6,10 @@
   "exports": {
     "./button": "./src/button.tsx",
     "./card": "./src/card.tsx",
-    "./status-badge": "./src/status-badge.tsx"
+    "./status-badge": "./src/status-badge.tsx",
+    "./bar-chart": "./src/bar-chart.tsx",
+    "./line-chart": "./src/line-chart.tsx",
+    "./data-grid": "./src/data-grid.tsx"
   },
   "peerDependencies": {
     "react": "^19.3.1"
@@ -14,5 +17,11 @@
   "devDependencies": {
     "@types/react": "^19.3.0",
     "react": "^19.3.1"
+  },
+  "dependencies": {
+    "ag-grid-community": "36.3.0",
+    "ag-grid-react": "36.3.0",
+    "chart.js": "4.6.1",
+    "react-chartjs-2": "5.3.1"
   }
 }
