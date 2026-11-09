@@ -120,7 +120,7 @@ function loanRoom(p: Painter, cx: number) {
 
 function statsRoom(p: Painter, cx: number) {
   F.sign(p, cx, 12, "통계팀");
-  F.whiteboard(p, 444, 12);
+  F.whiteboard(p, 434, 12);
   F.cabinet(p, 610, 22);
   F.window(p, 564, 10);
   F.desk(p, 450, 92);

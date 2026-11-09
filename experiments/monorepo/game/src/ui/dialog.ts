@@ -5,6 +5,8 @@ export class Dialog {
   private readonly box: HTMLDivElement;
   private readonly hint: HTMLDivElement;
   private room: Room | null = null;
+  private pages: Page[] = [];
+  private notes = 0; // 방 설명 앞에 붙인 쪽 수
   private page = 0;
   private selected = 0;
   private result: Page | null = null; // 고른 뒤 보여 주는 결과
@@ -24,7 +26,7 @@ export class Dialog {
 
   // 지금 보여 주는 방과 쪽 번호. 연출을 맞추는 데 쓴다
   get current() {
-    return this.room ? { id: this.room.id, page: this.page } : null;
+    return this.room ? { id: this.room.id, page: this.page - this.notes } : null;
   }
 
   showHint(title: string | null) {
@@ -32,8 +34,10 @@ export class Dialog {
     this.hint.classList.toggle("visible", title !== null && !this.isOpen);
   }
 
-  open(room: Room) {
+  open(room: Room, notes: Page[] = []) {
     this.room = room;
+    this.pages = [...notes, ...room.pages];
+    this.notes = notes.length;
     this.page = 0;
     this.selected = 0;
     this.result = null;
@@ -57,7 +61,7 @@ export class Dialog {
       return;
     }
     this.result = null;
-    if (this.page + 1 < this.room.pages.length) {
+    if (this.page + 1 < this.pages.length) {
       this.page += 1;
       this.render();
     } else {
@@ -72,7 +76,7 @@ export class Dialog {
   }
 
   private get choosing() {
-    return this.room && !this.result ? this.room.pages[this.page].choices : undefined;
+    return this.room && !this.result ? this.pages[this.page].choices : undefined;
   }
 
   private pick(index: number) {
@@ -88,10 +92,13 @@ export class Dialog {
     choices.forEach((choice, index) => {
       const item = document.createElement("div");
       item.className = index === this.selected ? "choice selected" : "choice";
-      const swatch = document.createElement("span");
-      swatch.className = "swatch";
-      swatch.style.background = choice.swatch;
-      item.append(swatch, choice.label);
+      if (choice.swatch) {
+        const swatch = document.createElement("span");
+        swatch.className = "swatch";
+        swatch.style.background = choice.swatch;
+        item.append(swatch);
+      }
+      item.append(choice.label);
       item.addEventListener("click", () => this.pick(index));
       row.append(item);
     });
@@ -100,7 +107,7 @@ export class Dialog {
 
   private render() {
     const room = this.room!;
-    const page = this.result ?? room.pages[this.page];
+    const page = this.result ?? this.pages[this.page];
     const title = document.createElement("div");
     title.className = "title";
     title.textContent = room.title;
@@ -127,9 +134,9 @@ export class Dialog {
     link.rel = "noreferrer";
     link.textContent = `근거 보기 ${room.evidence.label}`;
     const more = document.createElement("span");
-    const last = this.page + 1 === room.pages.length;
+    const last = this.page + 1 === this.pages.length;
     const action = page.choices ? "[←→] 고르기 · [Space] 결정" : `[Space] ${last ? "닫기" : "다음"}`;
-    more.textContent = `${this.page + 1} / ${room.pages.length} · ${action}`;
+    more.textContent = `${this.page + 1} / ${this.pages.length} · ${action}`;
     foot.append(link, more);
     this.box.replaceChildren(...parts, foot);
     this.box.classList.add("visible");

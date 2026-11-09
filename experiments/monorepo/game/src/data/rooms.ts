@@ -1,4 +1,5 @@
 import type { Rect } from "../map/colliders";
+import { partChoices } from "./parts";
 
 const ISSUE = "https://github.com/kyungchan3007/frontend-architecture/issues";
 
@@ -12,7 +13,7 @@ export type Page = {
 export type Choice = {
   id: string;
   label: string;
-  swatch: string; // 선택지에 보여 줄 색
+  swatch?: string; // 선택지에 보여 줄 색
   result: Page; // 고른 뒤 보여 줄 내용
 };
 
@@ -101,7 +102,7 @@ export const ROOMS: Room[] = [
     zone: [216, 288, 208, 122],
     pages: [
       { text: "여러 팀이 함께 쓰는 부품을 만드는 곳입니다. 공용 부품은 목적별로 나눠 둡니다.", term: "packages/ui · packages/api" },
-      { text: "Button 하나를 고쳤더니 세 팀이 모두 다시 빌드되었습니다. 통계팀은 Button을 쓰지 않는데도요.", term: "터보레포는 패키지 단위로 변경을 판단" },
+      { text: "고칠 부품을 골라 보세요. 어느 팀이 공사를 하게 될까요?", term: "packages/ui · 스위치 Button · 게시판 Card · 표지판 StatusBadge · 계기판 Chart", choices: partChoices },
     ],
     evidence: { label: "#49", url: `${ISSUE}/49` },
   },

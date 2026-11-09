@@ -44,6 +44,35 @@ export function drawBadge(label: string, fill: Color, ink: Color) {
   return c;
 }
 
+// 방에 달린 부품. accent 색으로 고치기 전과 후를 구분한다
+export function drawRoomPart(kind: string, accent: Color) {
+  const c = canvas(24, 20);
+  const p = new Painter(c);
+  if (kind === "switch") {
+    p.box(6, 1, 12, 18, "wt", undefined, "m1");
+    p.box(9, 4, 6, 12, "m2");
+    p.rect(10, 5, 4, 5, accent);
+  } else if (kind === "board") {
+    p.box(0, 2, 24, 16, "tb2", "tb1", "tbK");
+    p.rect(2, 4, 20, 12, "wd1");
+    p.rect(4, 6, 7, 8, accent);
+    p.rect(13, 6, 7, 3, "wt");
+    p.rect(13, 11, 7, 3, "wt");
+  } else if (kind === "sign") {
+    p.rect(11, 0, 2, 4, "m3");
+    p.box(1, 4, 22, 14, accent);
+    p.rect(5, 8, 14, 2, "wt");
+    p.rect(5, 12, 9, 2, "wt");
+  } else {
+    p.box(1, 1, 22, 18, "m3", "m2", "o");
+    p.rect(4, 4, 16, 12, "#1d2340");
+    p.rect(6, 11, 3, 3, accent);
+    p.rect(10, 8, 3, 6, accent);
+    p.rect(14, 6, 3, 8, accent);
+  }
+  return c;
+}
+
 export function drawCart() {
   const c = canvas(32, 32);
   F.cart(new Painter(c), 1, 8);
