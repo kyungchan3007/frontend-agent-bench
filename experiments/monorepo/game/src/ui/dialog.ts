@@ -81,7 +81,7 @@ export class Dialog {
 
   private pick(index: number) {
     const choice = this.choosing![index];
-    this.result = choice.result;
+    this.result = typeof choice.result === "function" ? choice.result() : choice.result;
     this.onChoose(this.room!.id, choice);
     this.render();
   }
@@ -129,10 +129,11 @@ export class Dialog {
     const foot = document.createElement("div");
     foot.className = "foot";
     const link = document.createElement("a");
-    link.href = room.evidence.url;
+    const evidence = page.evidence ?? room.evidence;
+    link.href = evidence.url;
     link.target = "_blank";
     link.rel = "noreferrer";
-    link.textContent = `근거 보기 ${room.evidence.label}`;
+    link.textContent = `근거 보기 ${evidence.label}`;
     const more = document.createElement("span");
     const last = this.page + 1 === this.pages.length;
     const action = page.choices ? "[←→] 고르기 · [Space] 결정" : `[Space] ${last ? "닫기" : "다음"}`;

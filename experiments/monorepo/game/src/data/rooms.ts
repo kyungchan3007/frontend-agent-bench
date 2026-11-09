@@ -1,12 +1,16 @@
 import type { Rect } from "../map/colliders";
+import { cacheChoices } from "./build-state";
 import { partChoices } from "./parts";
 
 const ISSUE = "https://github.com/kyungchan3007/frontend-architecture/issues";
+
+export type Evidence = { label: string; url: string };
 
 export type Page = {
   text: string; // 쉬운 설명
   term: string; // 실제 용어와 수치
   why?: string; // 결과가 그렇게 나온 이유
+  evidence?: Evidence; // 방의 근거와 다를 때만 적는다
   choices?: Choice[]; // 있으면 이 쪽에서 직접 고른다
 };
 
@@ -14,7 +18,7 @@ export type Choice = {
   id: string;
   label: string;
   swatch?: string; // 선택지에 보여 줄 색
-  result: Page; // 고른 뒤 보여 줄 내용
+  result: Page | (() => Page); // 고른 뒤 보여 줄 내용. 상태에 따라 달라지면 함수로 둔다
 };
 
 export type Room = {
@@ -23,7 +27,7 @@ export type Room = {
   // 캐릭터 발이 이 영역에 있으면 살펴볼 수 있다. 앞에 있는 방이 먼저 선택된다
   zone: Rect;
   pages: Page[];
-  evidence: { label: string; url: string };
+  evidence: Evidence;
 };
 
 // 1단계 packages/design-tokens의 실제 색 값
@@ -111,7 +115,8 @@ export const ROOMS: Room[] = [
     title: "캐시 보관실",
     zone: [430, 288, 206, 122],
     pages: [
-      { text: "바뀐 것이 없으면 다시 짓지 않고, 전에 만든 결과를 여기서 바로 꺼내 씁니다.", term: "터보레포 캐시 HIT" },
+      { text: "바뀐 것이 없으면 다시 짓지 않고, 전에 만든 결과를 여기서 바로 꺼내 씁니다.", term: "터보레포 캐시" },
+      { text: "다시 빌드하거나 상자를 비워 보세요. 부품실에서 부품을 고친 뒤에 빌드해 봐도 좋습니다.", term: "turbo run build · .turbo/cache", choices: cacheChoices },
     ],
     evidence: { label: "#45", url: `${ISSUE}/45` },
   },

@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { DIRS, drawCharacterSheet, FRAME, type Dir } from "../art/character";
 import { drawFloor, WORLD } from "../art/floor-art";
+import { cacheNote } from "../data/build-state";
 import { repairNote } from "../data/parts";
 import { roomAt } from "../data/rooms";
 import { hitsCollider } from "../map/colliders";
@@ -79,7 +80,7 @@ export class FloorScene extends Phaser.Scene {
     const room = roomAt(this.player.x, this.player.y);
     this.dialog.showHint(room?.title ?? null);
     if (pressed && room) {
-      this.dialog.open(room, repairNote(this.effects.repairedPart, room.id));
+      this.dialog.open(room, [...repairNote(this.effects.repairedPart, room.id), ...cacheNote(room.id)]);
       this.syncEffects();
       return;
     }

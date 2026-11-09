@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { drawBadge, drawCart, drawConstructionSign, drawPart, drawRoomPart, drawScaffold } from "../art/effect-art";
 import { WORLD } from "../art/floor-art";
+import { buildState } from "../data/build-state";
 import { PARTS, type TeamId } from "../data/parts";
 import type { Choice } from "../data/rooms";
 
@@ -10,6 +11,9 @@ const PART_ROW: Record<TeamId, number> = { search: 106, loans: 320, stats: 527 }
 const PART_GAP = 26;
 const PART_Y = 40;
 const BUILD_MS = 2400;
+const CACHE_NAMES: Record<TeamId, string> = { search: "검색", loans: "대출", stats: "통계" };
+const CACHE_X: Record<TeamId, number> = { search: 465, loans: 520, stats: 575 };
+const CACHE_Y = 322;
 const MONITORS = [56, 146, 262, 466, 556];
 
 // 대화창 내용에 맞춰 층 위에 보여 주는 연출. 실제 측정 결과를 그림으로 표현한다
@@ -31,7 +35,11 @@ export class RoomEffects {
     add("fx-scaffold", drawScaffold());
     add("fx-sign", drawConstructionSign());
     add("fx-cart", drawCart());
-    add("fx-hit", drawBadge("캐시 HIT", "g2", "wt"));
+    for (const [team, name] of Object.entries(CACHE_NAMES)) {
+      add(`cache-${team}-hit`, drawBadge(`${name} HIT`, "g2", "wt"));
+      add(`cache-${team}-miss`, drawBadge(`${name} MISS`, "r2", "wt"));
+      add(`cache-${team}-empty`, drawBadge(`${name} 비움`, "m3", "wt"));
+    }
     add("fx-unused", drawBadge("안 쓰는 Button 스타일", "r2", "wt"));
     add("fx-files", drawBadge("파일 +11~14개", "y1", "o"));
     add("fx-kb", drawBadge("+25.8KB", "r2", "wt"));
@@ -64,7 +72,6 @@ export class RoomEffects {
     this.playing = key;
     this.clear();
     if (id === "design" || (id === "parts" && page === 1)) this.zoomOut();
-    else if (id === "cache") this.bounce("fx-hit", 500, 322);
     else if (id === "stats" && page === 0) this.bounce("fx-unused", 533, 64);
     else if (id === "crate") this.crate(page);
   }
@@ -72,6 +79,7 @@ export class RoomEffects {
   // 대화창에서 고른 결과를 층에 반영한다
   choose(roomId: string, choice: Choice) {
     if (roomId === "parts") this.repair(choice.id);
+    if (roomId === "cache") this.showCache(choice.id);
     if (roomId !== "design" || !choice.swatch) return;
     const color = Number.parseInt(choice.swatch.slice(1), 16);
     this.screens.forEach((screen) => screen.setFillStyle(color).setVisible(true));
@@ -113,6 +121,7 @@ export class RoomEffects {
   private repair(partId: string) {
     const part = PARTS.find(({ id }) => id === partId)!;
     this.repairedPart = partId;
+    buildState.markStale("repair");
     const site: Phaser.GameObjects.Image[] = [];
     TEAM_IDS.forEach((team, n) => {
       const x = TEAMS[team];
@@ -153,6 +162,12 @@ export class RoomEffects {
         }
       }),
     );
+  }
+
+  // 세 팀의 빌드 결과를 캐시 상자 위에 표시한다
+  private showCache(action: string) {
+    const state = action === "clear" ? "empty" : buildState.lastHit ? "hit" : "miss";
+    for (const team of TEAM_IDS) this.bounce(`cache-${team}-${state}`, CACHE_X[team], CACHE_Y);
   }
 
   private bounce(key: string, x: number, y: number) {
