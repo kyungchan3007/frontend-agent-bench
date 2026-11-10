@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { DIRS, drawCharacterSheet, FRAME, type Dir } from "../art/character";
 import { drawFloor, WORLD } from "../art/floor-art";
+import { cacheNote } from "../data/build-state";
+import { repairNote } from "../data/parts";
 import { roomAt } from "../data/rooms";
 import { hitsCollider } from "../map/colliders";
 import { Dialog } from "../ui/dialog";
@@ -58,6 +60,9 @@ export class FloorScene extends Phaser.Scene {
     });
     this.dialog = new Dialog(document.getElementById("game")!);
     this.effects = new RoomEffects(this, this.player);
+    this.dialog.onChoose = (roomId, choice) => this.effects.choose(roomId, choice);
+    this.keys.left.on("down", () => this.dialog.move(-1));
+    this.keys.right.on("down", () => this.dialog.move(1));
   }
 
   update(_time: number, delta: number) {
@@ -75,7 +80,7 @@ export class FloorScene extends Phaser.Scene {
     const room = roomAt(this.player.x, this.player.y);
     this.dialog.showHint(room?.title ?? null);
     if (pressed && room) {
-      this.dialog.open(room);
+      this.dialog.open(room, [...repairNote(this.effects.repairedPart, room.id), ...cacheNote(room.id)]);
       this.syncEffects();
       return;
     }
