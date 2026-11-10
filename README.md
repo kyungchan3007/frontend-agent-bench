@@ -10,17 +10,15 @@
 
 ## 👀 한눈에 보기
 
-현업에서 사용한 프론트엔드 구조(서비스 3개 + 공용 패키지)를 도서 대출 도메인으로 약식 구현하고, 공식 문서와 측정을 근거로 하나씩 비교해 보고 있습니다.
+현업에서 사용한 프론트엔드 구조(서비스 3개 + 공용 패키지)를 도서 대출 도메인으로 약식 구현하고, 공식 문서와 직접 측정한 결과로 하나씩 확인해 보고 있습니다. 지금은 1단계(현업 방식 재현)를 마쳤습니다.
 
-🎮 **[1단계 결과를 도트 게임으로 보기](https://kyungchan3007.github.io/frontend-architecture/)** · PC 웹에서 방향키로 이동하고 Space로 살펴볼 수 있습니다
+**1단계에서 확인한 것**
 
-| 확인한 것 | 결과 | 근거 |
-|---|---|---|
-| 공용 UI 하나 수정 | 사용하지 않는 앱까지 3개 모두 다시 빌드 | [#49](https://github.com/kyungchan3007/frontend-architecture/issues/49) |
-| barrel(index.ts) 사용 | 개발 서버는 파일 11~14개 더, 배포는 거의 같음 | [#61](https://github.com/kyungchan3007/frontend-architecture/issues/61) |
-| API 코드 자동 생성 | 범용 타입이 앱에 중복 생성, 영향은 작음 | [#57](https://github.com/kyungchan3007/frontend-architecture/issues/57) |
+- **공용 UI는 하나만 고쳐도 앱 3개가 모두 다시 빌드됐습니다.** 터보레포가 파일이 아니라 패키지 단위로 변경을 판단하기 때문이라고 봤습니다. 공용 UI를 목적별로 나누면 이 범위가 줄어드는지 2단계에서 확인해 보려고 합니다. ([#49](https://github.com/kyungchan3007/frontend-architecture/issues/49))
+- **index.ts로 모아 내보내는 방식(barrel)은 개발할 때 비용이 있었습니다.** 개발 서버가 첫 화면에서 파일을 앱마다 11~14개 더 불러왔고, 배포 결과물은 대부분 거의 같았습니다. ([#61](https://github.com/kyungchan3007/frontend-architecture/issues/61))
+- **API 코드를 명세에서 자동 생성하니, 범용 타입이 앱 쪽에 다시 생성됐습니다.** 생성기 설정으로는 막지 못했지만 영향이 작아서, 공통 API를 범용으로 두는 이유는 여전하다고 봤습니다. ([#57](https://github.com/kyungchan3007/frontend-architecture/issues/57))
 
-- **진행 상황:** 1단계(현업 방식 재현) 완료 · 2단계(개선안 비교) 준비 중
+🎮 **[1단계 결과를 도트 게임으로 보기](https://kyungchan3007.github.io/frontend-architecture/)** · 색과 부품을 직접 바꿔 보며 왜 다시 빌드되는지 확인할 수 있습니다 (PC 웹)
 
 ---
 
