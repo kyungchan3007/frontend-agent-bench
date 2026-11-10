@@ -65,7 +65,7 @@
 
 | 단계 | 내용 | 상태 |
 |---|---|---|
-| 1단계 | 현업 방식 그대로 | 진행 중 |
+| 1단계 | 현업 방식 그대로 | 완료 |
 | 2단계 | 개선 1 | 논의 예정 |
 | 3단계 | 개선 2 | 논의 예정 |
 
@@ -117,21 +117,80 @@
 
 - Button을 쓰지 않는 통계 앱도 다시 빌드됐습니다. 터보레포가 패키지 단위로 변경을 판단하기 때문이라고 봤습니다.
 - CSS에는 앱이 쓰지 않는 컴포넌트의 스타일까지 들어갔습니다.
+- Button에 새 크기를 추가하고 대출 앱만 쓰게 해 봤는데, 결과는 Button을 고쳤을 때와 같았습니다. 새 크기를 쓰지 않는 검색 앱도 Button 파일이 바뀌어 JS가 함께 바뀌었습니다.
 - 수정 전후 스크린샷과 공식 문서 근거: [#49](https://github.com/kyungchan3007/frontend-architecture/issues/49)
 
 </details>
 
+#### API 패키지: 범용 명세와 앱 전용 명세
+
+**고민:** 여러 앱이 함께 쓰는 API는 범용으로 두고 나머지는 앱마다 두면, 생성 코드는 어떻게 나뉠까?
+
+**생각:** 앱 명세가 범용 타입을 가리키기만 해도 그 타입과 호출 기반 코드가 앱 쪽에 다시 생성됐고, 생성기 설정으로도 막지 못했습니다. 다만 범용 API 호출과 서비스 함수는 다시 생기지 않았고 영향도 작아서, 범용으로 둘 이유는 여전하다고 봤습니다.
+
+<details>
+<summary>자세히 보기</summary>
+
+- 명세에서 타입 · 호출 코드 · zod 스키마를 생성하고, 응답은 zod로 자동 검사합니다.
+- TypeScript 7에는 컴파일러 API가 없어서, 코드 생성기에는 TypeScript 6을 함께 사용했습니다.
+- 근거: [#55](https://github.com/kyungchan3007/frontend-architecture/issues/55) · [#57](https://github.com/kyungchan3007/frontend-architecture/issues/57)
+
+</details>
+
+#### 앱 화면: FSD 기반 구조
+
+**고민:** 앱 안의 코드는 어떤 기준으로 나눌까?
+
+**생각:** FSD를 기준으로 계층을 나누고 앱마다 메뉴 2개를 만들었습니다. 계층마다 가져다 쓸 수 있는 방향이 정해져 있어서, 공통 컴포넌트가 도메인 코드를 가져다 쓰던 부분을 고쳤습니다.
+
+<details>
+<summary>자세히 보기</summary>
+
+- 근거: [#59](https://github.com/kyungchan3007/frontend-architecture/issues/59)
+
+</details>
+
+#### barrel(index.ts): 있을 때와 없을 때
+
+**고민:** 현업에서는 관리가 편하다고 판단해 index.ts로 모아 내보냈는데, 문서는 barrel을 피하라고 권장합니다. 실제로 차이가 있을까?
+
+**생각:** 같은 코드로 barrel 유무만 다르게 만들어 비교해 봤습니다. 개발 서버에서는 차이가 보였고, 배포 결과물은 대부분 거의 같았습니다.
+
+| 확인한 곳 | barrel 쪽 결과 |
+|---|---|
+| 개발 서버 첫 화면 | 파일을 앱마다 11~14개 더 읽음 |
+| 배포 결과물 (일반 컴포넌트) | 10~35바이트 차이로 거의 같음 |
+| 배포 결과물 (등록 코드가 있는 차트) | 약 25.8KB 더 큼, `sideEffects` 표시로 거의 같아짐 |
+
+<details>
+<summary>자세히 보기</summary>
+
+- barrel 있음: [step-1-barrel](experiments/monorepo/step-1-barrel) · barrel 없음: [step-1-current](experiments/monorepo/step-1-current)
+- 근거: [#61](https://github.com/kyungchan3007/frontend-architecture/issues/61)
+
+</details>
+
+#### 결과 정리: 도트 게임
+
+1단계에서 확인한 내용을 건물 한 층을 걸어 다니며 볼 수 있는 도트 게임으로 만들어 봤습니다. [게임 열기](https://kyungchan3007.github.io/frontend-architecture/)
+
+- 디자인실에서 색을, 부품실에서 고칠 부품을, 캐시 보관실에서 빌드를 직접 골라 보며 왜 다시 빌드되는지 확인할 수 있습니다.
+- PC 웹에서 방향키로 걷고 Space로 살펴볼 수 있습니다.
+- 근거: [#65](https://github.com/kyungchan3007/frontend-architecture/issues/65) · [#68](https://github.com/kyungchan3007/frontend-architecture/issues/68)
+
+#### 1단계를 돌아보니
+
+- 문서 권장을 그대로 적용했던 부분은, 다시 살펴보니 이유가 있는 구조였다고 봤습니다.
+- barrel은 틀린 판단이었다기보다, 비용을 깊게 생각해 보지 못하고 쓴 선택이었던 것 같습니다.
+- 정리 댓글: [#34](https://github.com/kyungchan3007/frontend-architecture/issues/34)
+
 ### 🌱 다음에 할 일
 
-- **1단계 마무리**
-  - API 패키지: 공통 명세와 앱 전용 명세를 분리해 보려고 합니다.
-  - 앱 3개 화면: 앱 안을 현업과 같은 구조로 나눠 보려고 합니다.
-- **1단계 결과 정리**
-  - 지금까지 확인한 내용을 건물 한 층을 걸어 다니며 볼 수 있는 도트 게임으로 만들어 봤습니다. [게임 열기](https://kyungchan3007.github.io/frontend-architecture/)
-  - PC 웹에서 방향키로 걷고 Space로 살펴볼 수 있습니다.
 - **2단계 후보**
+  - Next.js(App Router)로 옮기기: 1단계 결과가 어떻게 달라지는지
   - 공통 컴포넌트를 목적별 패키지로 분리하기: 다시 빌드하는 범위가 줄어드는지
   - 컴포넌트별로 CSS 등록하기: 쓰지 않는 스타일이 빠지는지
+  - 서비스별 대표 색상 · 서비스 추가: 1단계 방식과 비교하기
 
 ---
 
