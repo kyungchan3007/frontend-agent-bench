@@ -13,9 +13,6 @@
     "noEmit": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "types": [
-      "vite/client"
-    ],
     "paths": {
       "@/*": [
         "./src/*"
@@ -34,7 +31,6 @@
   },
   "include": [
     "src",
-    "vite.config.ts",
     "app",
     "./dist/types/**/*.ts",
     "./next-env.d.ts",
