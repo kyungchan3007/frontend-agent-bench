@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
-// 공식 가이드(Vite에서 이전하기) Step 2: 먼저 클라이언트 전용 앱(SPA)으로 내보낸다
+// #81: 정적 내보내기(output: 'export')를 빼고 서버 모드로 바꿨다.
+// 미리 만들지 않은 동적 주소(/books/b1 등)를 요청이 올 때 처리하기 위해서다
 const nextConfig = {
-  output: "export", // 정적 파일로 내보내는 SPA
-  distDir: "./dist", // 빌드 결과를 Vite 때와 같은 dist에 둔다
+  distDir: "./dist", // 빌드 결과 폴더는 이번 단계에서 바꾸지 않는다
 };
 
 export default nextConfig;
