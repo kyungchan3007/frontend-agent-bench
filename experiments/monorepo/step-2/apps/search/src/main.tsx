@@ -1,4 +1,4 @@
-import { bootstrap } from "@/app/bootstrap";
+import { bootstrap } from "@/_app/bootstrap";
 import "./index.css";
 
 bootstrap();
