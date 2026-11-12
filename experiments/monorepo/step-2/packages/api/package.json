@@ -1,0 +1,23 @@
+{
+  "name": "@repo/api",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./setup": "./src/setup/index.ts",
+    "./books": "./src/books/index.ts",
+    "./users": "./src/users/index.ts",
+    "./mocks": "./src/mocks/index.ts"
+  },
+  "scripts": {
+    "generate": "openapi-ts"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.99.0",
+    "msw": "3.0.4",
+    "typescript": "npm:@typescript/typescript6@6.0.2"
+  }
+}
