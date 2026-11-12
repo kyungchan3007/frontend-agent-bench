@@ -1,0 +1,61 @@
+# 대출 앱 전용 명세: 도서(Book) · 사용자(User)는 범용 명세를 가져다 사용한다
+openapi: 3.1.0
+info:
+  title: 대출 API
+  version: 1.0.0
+paths:
+  /loans:
+    get:
+      operationId: getLoans
+      summary: 대출 목록 (status로 연체만 조회 가능)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/LoanStatus"
+      responses:
+        "200":
+          description: 대출 목록
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Loan"
+  /loans/{loanId}/return:
+    post:
+      operationId: returnLoan
+      summary: 반납 처리
+      parameters:
+        - name: loanId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 반납된 대출
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Loan"
+components:
+  schemas:
+    LoanStatus:
+      type: string
+      enum: [loaned, overdue, returned]
+    Loan:
+      type: object
+      required: [id, book, user, dueDate, status]
+      properties:
+        id:
+          type: string
+        book:
+          $ref: "../../../packages/api/openapi/common.yaml#/components/schemas/Book"
+        user:
+          $ref: "../../../packages/api/openapi/common.yaml#/components/schemas/User"
+        dueDate:
+          type: string
+        status:
+          $ref: "#/components/schemas/LoanStatus"
