@@ -12,6 +12,8 @@ importers:
         specifier: ^2.11.10
         version: 2.11.10
 
+  apps/backend: {}
+
   apps/loans:
     dependencies:
       '@repo/api':
@@ -109,9 +111,6 @@ importers:
       '@typescript/native':
         specifier: npm:typescript@7.0.2
         version: typescript@7.0.2
-      msw:
-        specifier: 3.0.4
-        version: 3.0.4(@types/node@26.6.6)(@typescript/typescript6@6.0.2)(vite@8.3.6(@types/node@26.6.6)(jiti@2.7.0))
       postcss:
         specifier: 8.5.32
         version: 8.5.32
