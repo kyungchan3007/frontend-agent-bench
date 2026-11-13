@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import Link from "next/link";
 import { fetchBook, type Book } from "@repo/api/books";
 import { BookCard } from "@/shared/ui/card";
 
@@ -14,7 +14,8 @@ export function BookDetailView({ bookId }: { bookId: string }) {
   return (
     <section>
       <BookCard book={book} />
-      <Link to="/">검색으로</Link>
+      {/* React Router 영역에서 나갈 때도 Next.js를 거치도록 Next.js Link를 쓴다 (React Router Link면 옛 검색 화면으로 감) */}
+      <Link href="/">검색으로</Link>
     </section>
   );
 }

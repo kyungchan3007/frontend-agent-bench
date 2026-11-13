@@ -1,9 +1,12 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import Link from "next/link";
 import { searchBooks, type BookSearchResult } from "@/entities/book-search";
 import { BookCard } from "@/shared/ui/card";
 
-// 도서 검색 메뉴의 화면 기능
+// 도서 검색 메뉴의 화면 기능. 검색어 상태와 브라우저 요청이 있어 클라이언트 컴포넌트다
+// App Router로 옮기면서 링크를 React Router에서 Next.js Link로 바꿨다
 export function BookSearchView() {
   const [q, setQ] = useState("");
   const [result, setResult] = useState<BookSearchResult | null>(null);
@@ -17,7 +20,7 @@ export function BookSearchView() {
       <p data-testid="total">검색 결과 {result?.total ?? "-"}건</p>
       {result?.items.map((book) => (
         <BookCard key={book.id} book={book}>
-          <Link to={`/books/${book.id}`}>상세 보기</Link>
+          <Link href={`/books/${book.id}`}>상세 보기</Link>
         </BookCard>
       ))}
     </section>
