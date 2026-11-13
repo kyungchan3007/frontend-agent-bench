@@ -12,6 +12,7 @@
 - 브라우저의 /api 요청은 Route Handler(BFF)가 받아 백엔드로 넘긴다. rewrites는 쓰지 않는다 (확인됨)
 - 공통 @repo/api/mocks는 Vite 앱(대출 · 통계)이 쓰고 있어 그대로 둔다 (확인됨)
 - 3번을 시작하며 기존 호출 코드를 그대로 서버에서 불러 봤다. 앱 전용 · 공통 모두 서버에서 주소 설정이 적용되지 않았다 (#81 댓글). 확인용 코드는 되돌리고, 서버 주소 설정 방법을 정한 뒤 다시 한다 (확인됨)
+- 서버 주소는 Hey API createClientConfig(runtimeConfigPath)로 서버 · 브라우저 주소를 나눈다. 앱 전용 호출 코드에만 적용하고 공통(@repo/api)은 그대로 둔다 (확인됨: B)
 - 순서: 1) 백엔드 앱 추가 2) 검색 앱이 MSW 대신 백엔드를 봄 3) 검색 페이지가 서버에서 첫 결과를 가져옴 4) 공통 모듈별로 정리
 
 ## 애매한 곳 (방향 바꾸기 전)
@@ -26,6 +27,8 @@
 ## 파일 계획
 - experiments/monorepo/step-2/apps/backend/**
 - experiments/monorepo/step-2/pnpm-lock.yaml
+- experiments/monorepo/step-2/apps/search/openapi-ts.config.ts
+- experiments/monorepo/step-2/apps/search/src/generated/api/**
 - experiments/monorepo/step-2/apps/search/instrumentation.ts
 - experiments/monorepo/step-2/apps/search/app/**
 - experiments/monorepo/step-2/apps/search/src/_app/**
