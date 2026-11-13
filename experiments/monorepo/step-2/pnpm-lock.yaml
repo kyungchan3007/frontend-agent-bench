@@ -12,6 +12,8 @@ importers:
         specifier: ^2.11.10
         version: 2.11.10
 
+  apps/backend: {}
+
   apps/loans:
     dependencies:
       '@repo/api':
