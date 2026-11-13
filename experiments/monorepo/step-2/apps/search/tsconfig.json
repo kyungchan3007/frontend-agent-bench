@@ -32,7 +32,6 @@
   "include": [
     "src",
     "app",
-    "instrumentation.ts",
     "./dist/types/**/*.ts",
     "./next-env.d.ts",
     ".next/types/**/*.ts",

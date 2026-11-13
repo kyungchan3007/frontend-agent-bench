@@ -1,3 +1,3 @@
-// 서버가 부르는 백엔드 주소. 실험에는 실제 백엔드가 없어서 가짜 주소를 쓰고, 서버용 가짜 백엔드(msw/node)가 받는다
-// 서버(Node.js)에는 브라우저 같은 "현재 주소"가 없어서 상대 주소(/api)로는 요청할 수 없다
-export const BACKEND_ORIGIN = "http://backend.test";
+// Next.js 서버(BFF)가 부르는 백엔드 주소. 서버에서만 쓴다
+// 실험에서는 같은 모노레포의 Node.js 백엔드(apps/backend)를 부른다 (현업에서는 Java Spring 백엔드)
+export const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:4000";
