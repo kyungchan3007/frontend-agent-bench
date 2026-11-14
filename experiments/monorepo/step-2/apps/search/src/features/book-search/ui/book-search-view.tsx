@@ -1,29 +1,16 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { searchBooks, type BookSearchResult } from "@/entities/book-search";
+import type { BookSearchResult } from "@/entities/book-search";
 import { BookCard } from "@/shared/ui/card";
+import { SearchBox } from "./search-box";
 
-// 도서 검색 메뉴의 화면 기능. 검색어 상태와 브라우저 요청이 있어 클라이언트 컴포넌트다
-// 첫 결과는 서버가 가져오고, 검색어를 입력한 뒤의 요청만 브라우저에서 한다 (#81 2-2)
+// 도서 검색 메뉴의 화면 기능 (#81 2-3a)
+// 검색어는 주소에 있고 결과는 서버(검색 페이지)가 가져오므로, 상태가 없는 서버 컴포넌트가 됐다
+// 입력창(SearchBox)만 클라이언트 컴포넌트다
 // App Router로 옮기면서 링크를 React Router에서 Next.js Link로 바꿨다
-export function BookSearchView({ initialResult }: { initialResult: BookSearchResult }) {
-  const [q, setQ] = useState("");
-  const [result, setResult] = useState<BookSearchResult>(initialResult);
-  useEffect(() => {
-    // 검색어가 없을 때의 첫 결과는 서버(검색 페이지)가 가져와 props로 넘긴다
-    // (Next.js 문서 "Passing data from Server to Client Components")
-    if (q === "") {
-      setResult(initialResult);
-      return;
-    }
-    searchBooks(q).then(setResult);
-  }, [q, initialResult]);
-
+export function BookSearchView({ result }: { result: BookSearchResult }) {
   return (
     <section>
-      <input aria-label="검색어" value={q} onChange={(e) => setQ(e.target.value)} placeholder="제목으로 검색" />
+      <SearchBox />
       <p data-testid="total">검색 결과 {result.total}건</p>
       {result.items.map((book) => (
         <BookCard key={book.id} book={book}>
